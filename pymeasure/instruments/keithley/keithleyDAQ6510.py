@@ -176,6 +176,32 @@ class KeithleyDAQ6510(KeithleyBuffer, SCPIMixin, Instrument):
     )
 
 
+    #############################
+    # 4-Wire Resistance (Ohm)   #
+    #############################
+
+    four_wire_resistance = Instrument.measurement(
+        ":READ?",
+        """ Measure the 4-wire (remote-sense) resistance in Ohms, if configured for this reading. """
+    )
+
+    four_wire_resistance_range = Instrument.control(
+        ":SENS:FRES:RANG?", ":SENS:FRES:RANG:AUTO 0;:SENS:FRES:RANG %g",
+        """ Control the 4-wire resistance range in Ohms. When offset compensation is OFF,
+        valid ranges are 1 Ω to 100 MΩ. When offset compensation is ON, valid ranges are 1 Ω to 10 kΩ.
+        Auto-range is disabled when this property is set. """,
+        validator=truncated_range,
+        values=[1, 100E6]
+    )
+
+    four_wire_resistance_nplc = Instrument.control(
+        ":SENS:FRES:NPLC?", ":SENS:FRES:NPLC %g",
+        """ Control the number of power line cycles (NPLC) for the 4-wire resistance measurements,
+        which sets the integration period and measurement speed. Takes values from 5E-4 to 15 (60 Hz)
+        or 12 (50 Hz or 400 Hz). """
+    )
+
+
 
     ####################
     # Diode (V)       #
@@ -212,12 +238,36 @@ class KeithleyDAQ6510(KeithleyBuffer, SCPIMixin, Instrument):
         :param auto_range: A boolean value to enable auto_range if ``True``,
                            else uses the set resistance.
         """
-        log.info(f"{self.name} is measuring resistance.")
+        log.debug(f"{self.name} is measuring resistance.")
         self.write(f":SENS:FUNC \"RES\";:SENS:RES:NPLC {nplc};")
         if auto_range:
             self.write(":SENS:RES:RANG:AUTO ON;")
         else:
             self.resistance_range = resistance
+        self.check_errors()
+
+    def measure_four_wire_resistance(self, nplc=1, resistance=100e6, auto_range=True, offset_comp=False):
+        """ Configure the measurement of 4-wire (remote-sense) resistance.
+
+        :param nplc: Number of power line cycles (NPLC) from 5E-4 to 15 (60 Hz) or 12 (50 Hz or 400 Hz).
+        :param resistance: Upper limit of resistance in Ohms. Valid ranges are 1 Ω to 100 MΩ when offset
+                           compensation is OFF, or 1 Ω to 10 kΩ when offset compensation is ON.
+        :param auto_range: A boolean value to enable auto-range if ``True``, else uses the set resistance.
+        :param offset_comp: A boolean to turn offset compensation ON (``True``) or OFF (``False``).
+        """
+        log.debug(f"{self.name} is measuring 4-wire resistance.")
+        # Select the FRES function (4-wire resistance) and set integration time
+        self.write(f":SENS:FUNC \"FRES\";:SENS:FRES:NPLC {nplc};")
+
+        # Configure offset compensation if requested
+        self.offset_compensated = "ON" if offset_comp else "OFF"
+
+        # Configure ranging
+        if auto_range:
+            self.write(":SENS:FRES:RANG:AUTO ON;")
+        else:
+            self.four_wire_resistance_range = resistance
+
         self.check_errors()
 
     def measure_voltage(self, nplc=1, voltage=1000, auto_range=True):
