@@ -52,7 +52,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_discrete_set,
         values=["SINE", "SQUARE", "RAMP", "PULSE", "NOISE", "DC"],
         dynamic=True,
-        preprocess_reply=lambda r: r.split("WVTP,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split("WVTP,")[1].split(",")[0],
     )
 
     frequency = Instrument.control(
@@ -62,7 +62,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[1e-6, 30e6],
         dynamic=True,
-        preprocess_reply=lambda r: r.split("FRQ,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split("FRQ,")[1].split(",")[0],
     )
 
     amplitude = Instrument.control(
@@ -72,23 +72,23 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[2e-3, 20],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",AMP,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",AMP,")[1].split(",")[0],
     )
 
     amplitude_rms = Instrument.measurement(
         "C{ch}:BSWV?",
         """Read back Vrms from the basic-wave parameters.""",
-        preprocess_reply=lambda r: r.split(",AMPVRMS,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",AMPVRMS,")[1].split(",")[0],
     )
     amplitude_dbm = Instrument.measurement(
         "C{ch}:BSWV?",
         """Read back Vdbm from the basic-wave parameters.""",
-        preprocess_reply=lambda r: r.split(",AMPDBM,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",AMPDBM,")[1].split(",")[0],
     )
     amplitude_max = Instrument.measurement(
         "C{ch}:BSWV?",
         """Read back Vdbm from the basic-wave parameters.""",
-        preprocess_reply=lambda r: r.split(",MAX_OUTPUT_AMP,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",MAX_OUTPUT_AMP,")[1].split(",")[0],
     )
 
     offset = Instrument.control(
@@ -98,7 +98,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[-8, +8],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",OFST,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",OFST,")[1].split(",")[0],
     )
 
     voltage_high = Instrument.control(
@@ -108,7 +108,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[-5, 5],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",HLEV,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",HLEV,")[1].split(",")[0],
     )
 
     voltage_low = Instrument.control(
@@ -118,7 +118,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[-5, 5],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",LLEV,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",LLEV,")[1].split(",")[0],
     )
 
     phase = Instrument.control(
@@ -127,17 +127,17 @@ class SiglentSDG1032XChannel(Channel):
         """ Control the waveform phase in degrees (float, from -360 to 360).""",
         validator=strict_range,
         values=[-360, 360],
-        preprocess_reply=lambda r: r.split(",PHSE,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",PHSE,")[1].split(",")[0],
     )
 
-    dutycycle = Instrument.control(                                                          
+    dutycycle = Instrument.control(
         "C{ch}:BSWV?",
         "C{ch}:BSWV DUTY,%f",
         """ Control the duty cycle in percent (float).""",
         validator=strict_range,
         values=[0, 100],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",DUTY,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",DUTY,")[1].split(",")[0],
     )
 
     ramp_symmetry = Instrument.control(
@@ -147,7 +147,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[0, 100],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",SYM,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",SYM,")[1].split(",")[0],
     )
 
     period = Instrument.control(
@@ -157,9 +157,8 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[80e-9, 1e6],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",PERI,")[1].split(",")[0]                      
+        preprocess_reply=lambda r: r.split(",PERI,")[1].split(",")[0],
     )
-
 
     pulse_width = Instrument.control(
         "C{ch}:BSWV?",
@@ -168,7 +167,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[32.6e-9, 1e6],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",WIDTH,")[1].split(",")[0]  
+        preprocess_reply=lambda r: r.split(",WIDTH,")[1].split(",")[0],
     )
 
     pulse_rise_time = Instrument.control(
@@ -178,7 +177,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[16.8e-9, 22.4],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",RISE,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",RISE,")[1].split(",")[0],
     )
 
     pulse_fall_time = Instrument.control(
@@ -188,7 +187,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[16.8e-9, 22.4],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",FALL,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",FALL,")[1].split(",")[0],
     )
 
     pulse_delay = Instrument.control(
@@ -198,9 +197,8 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[-1e7, 1e7],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",DLY,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",DLY,")[1].split(",")[0],
     )
-
 
     output = Instrument.control(
         "C{ch}:OUTP?",
@@ -208,10 +206,18 @@ class SiglentSDG1032XChannel(Channel):
         """ Control the output state (bool).""",
         validator=strict_discrete_set,
         map_values=True,
-        values={True: "ON", "on": "ON", "On": "ON", "ON": "ON",
-                False: "OFF", "off": "OFF", "Off": "OFF", "OFF": "OFF"},
+        values={
+            True: "ON",
+            "on": "ON",
+            "On": "ON",
+            "ON": "ON",
+            False: "OFF",
+            "off": "OFF",
+            "Off": "OFF",
+            "OFF": "OFF",
+        },
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",")[0].split("OUTP ")[1] .strip(),
+        preprocess_reply=lambda r: r.split(",")[0].split("OUTP ")[1].strip(),
     )
 
     output_load = Instrument.control(
@@ -223,7 +229,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_discrete_set,
         values=["HZ", 50, "50"],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",LOAD,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",LOAD,")[1].split(",")[0],
     )
 
     output_polarity = Instrument.control(
@@ -233,7 +239,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_discrete_set,
         values=["NOR", "INVT"],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",PLRT,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",PLRT,")[1].split(",")[0],
     )
 
     noise_standard_deviation = Instrument.control(
@@ -243,7 +249,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[1e-3, 707e-3],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",STDEV,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",STDEV,")[1].split(",")[0],
     )
 
     noise_mean = Instrument.control(
@@ -253,7 +259,7 @@ class SiglentSDG1032XChannel(Channel):
         validator=strict_range,
         values=[-8, +8],
         dynamic=True,
-        preprocess_reply=lambda r: r.split(",MEAN,")[1].split(",")[0]
+        preprocess_reply=lambda r: r.split(",MEAN,")[1].split(",")[0],
     )
 
 
@@ -319,39 +325,40 @@ class SiglentSDG1032X(SCPIMixin, Instrument):
 
     ch_2 = Instrument.ChannelCreator(SiglentSDG1032XChannel, 2)
 
-    def __init__(self, adapter, name="Siglent SDG-1032X Function/Arbitrary Waveform Generator",
-                 **kwargs):
-        super().__init__(
-            adapter, name, **kwargs
-        )
+    def __init__(
+        self, adapter, name="Siglent SDG-1032X Function/Arbitrary Waveform Generator", **kwargs
+    ):
+        super().__init__(adapter, name, **kwargs)
+
 
 def _alias(name):
-    '''Default to ch_1'''
+    """Default to ch_1"""
     return property(
         lambda self, n=name: getattr(self.ch_1, n),
         lambda self, value, n=name: setattr(self.ch_1, n, value),
-        doc=f"Shortcut to ch_1.{name}"
+        doc=f"Shortcut to ch_1.{name}",
     )
 
+
 for _name in (
-        "shape",
-        "frequency", 
-        "amplitude", 
-        "offset",
-        "phase",
-        "output",           
-        "output_load",
-        "output_polarity",
-        "dutycycle",
-        "noise_standard_deviation",
-        "noise_mean",
-        "pulse_width",
-        "period"
-        "pulse_rise_time"
-        "pulse_fall_time"
-        "voltage_high"
-        "voltage_low"
-        "pulse_delay"
-        "ramp_symmetry"
+    "shape",
+    "frequency",
+    "amplitude",
+    "offset",
+    "phase",
+    "output",
+    "output_load",
+    "output_polarity",
+    "dutycycle",
+    "noise_standard_deviation",
+    "noise_mean",
+    "pulse_width",
+    "period",
+    "pulse_rise_time",
+    "pulse_fall_time",
+    "voltage_high",
+    "voltage_low",
+    "pulse_delay",
+    "ramp_symmetry",
 ):
     setattr(SiglentSDG1032X, _name, _alias(_name))
